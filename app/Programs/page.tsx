@@ -1,4 +1,5 @@
 import Coaching from "@/components/Coaching";
+import ContactSection from "@/components/ContactSection";
 import Discover from "@/components/Discover";
 import Explore from "@/components/Explore";
 import Footer from "@/components/Footer";
@@ -15,6 +16,7 @@ export default function Programs(){
             <Coaching/>
             </div>
             <Explore/>
+            <ContactSection/>
 
 
                  <div className="hidden md:block">
