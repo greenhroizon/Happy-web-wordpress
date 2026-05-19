@@ -115,7 +115,7 @@ const handleSubmit = async (
     }
 
     const response = await fetch(
-      "https://formsubmit.co/ajax/shreyashchandwadkar@gmail.com",
+      `https://formsubmit.co/ajax/${process.env.NEXT_PUBLIC_EMAIL_ID}`,
       {
         method: "POST",
         headers: {
@@ -329,7 +329,6 @@ const handleSubmit = async (
                     "Mindfulness & Focus",
                     "Leadership Wellbeing",
                     "Team Bonding & Communication",
-                    "Other (Please Specify)",
                   ].map((item) => (
                     <Radio
                       key={item}

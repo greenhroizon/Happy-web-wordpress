@@ -94,23 +94,27 @@ export default function ContactSection() {
             </div>
 
             {/* Phone */}
-            <div>
-              <label className="block mb-2 text-[#7A674C] text-lg">
-                Phone Number*
-              </label>
+           <div>
+  <label className="block mb-2 text-[#7A674C] text-lg">
+    Phone Number*
+  </label>
 
-              <div className="flex gap-2 w-full">
-                <input
-                  type="text"
-                  className="w-16 h-12 rounded-lg border border-[#8A8A8A] bg-white px-2 outline-none"
-                />
+  <div className="flex gap-2 w-full">
+    {/* Country Code */}
+    <input
+      type="text"
+      placeholder="+91"
+      className="w-20 min-w-[80px] h-12 rounded-lg border border-[#8A8A8A] bg-white px-2 outline-none"
+    />
 
-                <input
-                  type="text"
-                  className="flex-1 h-12 rounded-lg border border-[#8A8A8A] bg-white px-1 outline-none"
-                />
-              </div>
-            </div>
+    {/* Phone Number */}
+    <input
+      type="text"
+      placeholder="Enter phone number"
+      className="flex-1 min-w-0 h-12 rounded-lg border border-[#8A8A8A] bg-white px-4 outline-none"
+    />
+  </div>
+</div>
 
             {/* Concern */}
             <div>
