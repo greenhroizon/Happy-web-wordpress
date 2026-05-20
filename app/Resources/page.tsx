@@ -126,7 +126,7 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
                 <img
                   src={resolvePostImage(post)}
                   alt={stripHtml(post.title.rendered) || "Article image"}
-                  className="w-full h-[190px] object-cover"
+                  className="w-full h-[200px] object-cover"
                   loading="lazy"
                 />
                 <div className="p-4 space-y-3 text-[#544120]">

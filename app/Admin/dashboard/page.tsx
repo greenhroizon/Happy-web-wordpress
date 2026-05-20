@@ -31,38 +31,30 @@ export default function BookingsDashboard() {
   const [paymentFilter, setPaymentFilter] = useState<"all" | "paid" | "pending" | "failed">("all");
   const [search, setSearch] = useState("");
   const [refreshing, setRefreshing] = useState(false);
-  const [isMounted, setIsMounted] =
-  useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-const [isAuthenticated,
-  setIsAuthenticated] =
-  useState(false);
-
-  // Auth guard
-useEffect(() => {
-  setIsMounted(true);
+  useEffect(() => {
+    setIsMounted(true);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.replace("/Admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [router]);
 
   const token =
-    localStorage.getItem("token");
+    typeof window !== "undefined"
+      ? localStorage.getItem("token")
+      : null;
 
-  if (!token) {
-    router.replace("/Admin/login");
-  } else {
-    setIsAuthenticated(true);
-  }
-}, [router]);
+  const {
+    data: bookings = [],
+    isLoading,
+    error,
+  } = useBookings();
 
-if (!isMounted || !isAuthenticated) {
-  return null;
-}
-
-
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  if (!token) return null;
-
-  const { data: bookings = [], isLoading, error } = useBookings();
-
-  // Filter with useMemo — no extra useEffects needed
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return bookings.filter((b) => {
@@ -83,10 +75,16 @@ if (!isMounted || !isAuthenticated) {
     () => bookings.filter((b) => b.sessionType === "Online").length,
     [bookings]
   );
+
   const totalOffline = useMemo(
     () => bookings.filter((b) => b.sessionType === "Offline").length,
     [bookings]
   );
+
+  // ✅ Early return AFTER all hooks
+  if (!isMounted || !isAuthenticated || !token) {
+    return null;
+  }
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -325,6 +323,7 @@ if (!isMounted || !isAuthenticated) {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 text-zinc-500 hover:text-zinc-100 hover:bg-zinc-700"
+                              onClick={(e) => e.stopPropagation()}
                             >
                               <MoreVertical className="h-4 w-4" />
                             </Button>
@@ -332,13 +331,19 @@ if (!isMounted || !isAuthenticated) {
                           <DropdownMenuContent align="end" className="bg-zinc-800 border-zinc-700 text-zinc-200">
                             <DropdownMenuItem
                               className="hover:bg-zinc-700 cursor-pointer"
-                              onClick={() => navigator.clipboard.writeText(booking.email)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigator.clipboard.writeText(booking.email);
+                              }}
                             >
                               Copy Email
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               className="hover:bg-zinc-700 cursor-pointer"
-                              onClick={() => navigator.clipboard.writeText(booking.phoneNumber)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigator.clipboard.writeText(booking.phoneNumber);
+                              }}
                             >
                               Copy Phone
                             </DropdownMenuItem>
