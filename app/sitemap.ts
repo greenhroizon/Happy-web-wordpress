@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { fetchAllWordPressPostSlugs, SITE_URL } from "@/lib/wordpress";
+import { fetchAllBloggerPostSlugs, SITE_URL } from "@/lib/wordpress";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let articleEntries: MetadataRoute.Sitemap = [];
 
   try {
-    const posts = await fetchAllWordPressPostSlugs();
+    const posts = await fetchAllBloggerPostSlugs();
     articleEntries = posts.map((post) => ({
       url: `${SITE_URL}/Resources/${post.slug}`,
       lastModified: new Date(post.modified),
