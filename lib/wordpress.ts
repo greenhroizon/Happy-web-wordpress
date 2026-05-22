@@ -88,6 +88,7 @@ export function sanitizeWordPressHtml(value: string): string {
   return decodeNumericEntities(value).replace(/\[(.*?)\]/g, "").trim();
 }
 
+// Compatibility alias for code importing sanitizeHtml
 export const sanitizeHtml = sanitizeWordPressHtml;
 
 export function stripHtml(value: string): string {
@@ -101,19 +102,15 @@ function normalizeImageUrl(value?: string): string | null {
   const cleaned = decodeHtmlEntities(value).replace(/\\/g, "").trim();
   if (!cleaned) return null;
 
-  if (cleaned.startsWith("//")) {
-    return `https:${cleaned}`;
-  }
-
-  if (cleaned.startsWith("http://") || cleaned.startsWith("https://")) {
-    return cleaned;
-  }
+  if (cleaned.startsWith("//")) return `https:${cleaned}`;
+  if (cleaned.startsWith("http://") || cleaned.startsWith("https://")) return cleaned;
 
   return null;
 }
 
 function convertBloggerThumbToLarge(url?: string): string | null {
   if (!url) return null;
+
   const normalized = normalizeImageUrl(url);
   if (!normalized) return null;
 
@@ -136,9 +133,7 @@ function mapEntryToPost(entry: BloggerFeedEntry, index: number): WordPressPost |
   const alternateLink = entry.link?.find((link) => link.rel === "alternate")?.href;
   const slug = extractSlugFromLink(alternateLink ?? "");
 
-  if (!alternateLink || !slug) {
-    return null;
-  }
+  if (!alternateLink || !slug) return null;
 
   const title = entry.title?.$t ?? "Untitled";
   const content = entry.content?.$t ?? "";
@@ -156,11 +151,7 @@ function mapEntryToPost(entry: BloggerFeedEntry, index: number): WordPressPost |
     title: { rendered: title },
     content: { rendered: content },
     excerpt: { rendered: summary },
-    yoast_head_json: imageUrl
-      ? {
-          og_image: [{ url: imageUrl }],
-        }
-      : undefined,
+    yoast_head_json: imageUrl ? { og_image: [{ url: imageUrl }] } : undefined,
   };
 }
 
@@ -193,6 +184,7 @@ async function fetchFromBlogger(search?: string, startIndex = 1, maxResults = 10
 
 export function resolvePostImage(post: WordPressPost): string {
   const media = post._embedded?.["wp:featuredmedia"]?.[0];
+
   const featuredMediaUrl =
     media?.media_details?.sizes?.large?.source_url ??
     media?.media_details?.sizes?.medium_large?.source_url ??
@@ -218,3 +210,6 @@ export async function fetchAllWordPressPostSlugs(): Promise<Array<Pick<WordPress
   const posts = await fetchFromBlogger(undefined, 1, 200);
   return posts.map((post) => ({ slug: post.slug, modified: post.modified }));
 }
+
+// Compatibility alias for code importing Blogger-named helper
+export const fetchAllBloggerPostSlugs = fetchAllWordPressPostSlugs;
