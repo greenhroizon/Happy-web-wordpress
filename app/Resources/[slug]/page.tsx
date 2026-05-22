@@ -5,9 +5,9 @@ import Footer from "@/components/Footer";
 import FooterSmall from "@/components/FooterSmall";
 import BlogNavigationButton from "@/components/BlogNavigationButton";
 import {
-  fetchWordPressPostBySlug,
+  fetchBloggerPostBySlug,
   resolvePostImage,
-  sanitizeWordPressHtml,
+  sanitizeHtml,
   SITE_URL,
   stripHtml,
 } from "@/lib/wordpress";
@@ -18,14 +18,14 @@ interface ArticlePageProps {
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await fetchWordPressPostBySlug(slug);
+  const post = await fetchBloggerPostBySlug(slug);
 
   if (!post) {
     return { title: "Article Not Found | Happy Ho" };
   }
 
-  const title = stripHtml(post.title.rendered);
-  const description = stripHtml(post.excerpt.rendered);
+  const title = stripHtml(post.title);
+  const description = stripHtml(post.content).slice(0, 160);
 
   return {
     title: `${title} | Happy Ho`,
@@ -33,18 +33,18 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     openGraph: {
       title,
       description,
-      url: `${SITE_URL}/Resources/${post.slug}`,
+      url: `${SITE_URL}/Resources/${slug}`,
       images: [{ url: resolvePostImage(post) }],
       type: "article",
-      publishedTime: post.date,
-      modifiedTime: post.modified,
+      publishedTime: post.published,
+      modifiedTime: post.updated,
     },
   };
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const post = await fetchWordPressPostBySlug(slug);
+  const post = await fetchBloggerPostBySlug(slug);
 
   if (!post) {
     notFound();
@@ -55,17 +55,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <div className="bg-[#E5DFD5] rounded-b-[60px] pb-10">
         <Header />
         <section className="pt-8 px-6 xl:p-8 mx-auto max-w-[980px]">
-          <BlogNavigationButton
-            href="/Resources"
-            className="text-[#3f5c4a] hover:underline"
-            loadingText="Loading..."
-          >
+          <BlogNavigationButton href="/Resources" className="text-[#3f5c4a] hover:underline" loadingText="Loading...">
             ← Back to Resources
           </BlogNavigationButton>
-          <h1
-            className="text-3xl md:text-5xl mt-6 font-canela text-[#30271b]"
-            dangerouslySetInnerHTML={{ __html: sanitizeWordPressHtml(post.title.rendered) }}
-          />
+          <h1 className="text-3xl md:text-5xl mt-6 font-canela text-[#30271b]">{stripHtml(post.title)}</h1>
         </section>
       </div>
 
@@ -73,13 +66,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={resolvePostImage(post)}
-          alt={stripHtml(post.title.rendered)}
+          alt={stripHtml(post.title)}
           className="w-full max-h-[480px] object-cover rounded-3xl"
         />
-        <article
-          className="wp-content mt-8 text-[#2f2f2f]"
-          dangerouslySetInnerHTML={{ __html: sanitizeWordPressHtml(post.content.rendered) }}
-        />
+        <article className="wp-content mt-8 text-[#2f2f2f]" dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
       </section>
 
       <div className="hidden md:block">
