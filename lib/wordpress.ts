@@ -1,3 +1,4 @@
+export const sanitizeHtml = sanitizeWordPressHtml;
 const BLOGGER_FEED_BASE = "https://happyhooblog.blogspot.com/feeds/posts/default";
 
 export interface WordPressRenderedField {
