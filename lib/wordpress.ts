@@ -1,4 +1,3 @@
-export const sanitizeHtml = sanitizeWordPressHtml;
 const BLOGGER_FEED_BASE = "https://happyhooblog.blogspot.com/feeds/posts/default";
 
 export interface WordPressRenderedField {
@@ -88,6 +87,8 @@ function decodeHtmlEntities(value: string): string {
 export function sanitizeWordPressHtml(value: string): string {
   return decodeNumericEntities(value).replace(/\[(.*?)\]/g, "").trim();
 }
+
+export const sanitizeHtml = sanitizeWordPressHtml;
 
 export function stripHtml(value: string): string {
   const withoutTags = sanitizeWordPressHtml(value).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
