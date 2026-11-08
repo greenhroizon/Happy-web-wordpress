@@ -157,7 +157,7 @@ Name Correction"
                <GuideCardlarge
              src="/42.png"
   title="Jwalant Swaroop"
-  desc="Tarot aided Life, business & Career Coach + NLP + Motivational Speaker + Author"
+  desc="Tarot aided Life, business & Career Coach + Numerology + NLP + Motivational Speaker + Author"
 />
             </motion.div>
 
